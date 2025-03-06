@@ -1,14 +1,10 @@
-# lightdisplay.py
 import board
 import neopixel
 import time
-
-import board
-import neopixel
+import random
 
 class LightDisplay:
     BLACK = (0, 0, 0)  # Define black color
-
     pixels = None  # Shared NeoPixel instance
 
     def __init__(self, brightness):
@@ -20,7 +16,6 @@ class LightDisplay:
 
         self.pixels = LightDisplay.pixels  # Use shared instance
 
-        
     def half_pattern(self, colour):
         """Lights up pixels in a symmetrical pattern"""
         positions = [(0, 9), (1, 8), (2, 7), (3, 6), (4, 5)]
@@ -47,17 +42,29 @@ class LightDisplay:
 
     def random_light(self, colour, sec_interval):
         """Flashes five random pixels on and off five times"""
-        import random
+
+        if not isinstance(self.num_pixels, int):  # Ensure num_pixels is an integer
+            print("Error: num_pixels is not an integer!")
+            return  # Prevent function from breaking
+
         for _ in range(5):
-            selected_pixels = random.sample(range(self.num_pixels), 5)
+            try:
+                selected_pixels = random.sample(range(self.num_pixels), 5)  # ✅ Fix random.sample()
+                print("Selected pixels:", selected_pixels)  # Debugging output
+            except AttributeError:
+                print("Error: 'random' might be overridden.")  # Debugging
+                return
+
             for pos in selected_pixels:
-                self.pixels[pos] = colour
+                self.pixels[pos] = colour  # Light them up
+
             self.pixels.show()
-            time.sleep(sec_interval)
-            self.pixels.fill(self.BLACK)
+            time.sleep(sec_interval)  # Wait
+
+            self.pixels.fill(self.BLACK)  # Turn off
             self.pixels.show()
-            time.sleep(sec_interval)
-    
+            time.sleep(sec_interval)  # Wait again
+
     def snake(self, snake_size, colour, interval):
         """Creates a moving snake pattern"""
         if not (2 <= snake_size <= self.num_pixels // 2):
