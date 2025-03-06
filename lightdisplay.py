@@ -1,7 +1,7 @@
 import board
 import neopixel
 import time
-import random
+from random import randint  # ✅ Correct import
 
 class LightDisplay:
     BLACK = (0, 0, 0)  # Define black color
@@ -26,7 +26,7 @@ class LightDisplay:
             time.sleep(0.5)
         self.pixels.fill(self.BLACK)
         self.pixels.show()
-    
+
     def light(self, side, colour):
         """Lights up specific sections based on 'side' input"""
         mapping = {
@@ -43,33 +43,31 @@ class LightDisplay:
     def random_light(self, colour, sec_interval):
         """Flashes five random pixels on and off five times"""
 
-        if not isinstance(self.num_pixels, int):  # Ensure num_pixels is an integer
-            print("Error: num_pixels is not an integer!")
-            return  # Prevent function from breaking
-
         for _ in range(5):
-            try:
-                selected_pixels = random.sample(range(self.num_pixels), 5)  # ✅ Fix random.sample()
-                print("Selected pixels:", selected_pixels)  # Debugging output
-            except AttributeError:
-                print("Error: 'random' might be overridden.")  # Debugging
-                return
-
-            for pos in selected_pixels:
-                self.pixels[pos] = colour  # Light them up
+            indices = []
+            
+            while len(indices) < 5:
+                num = randint(0, self.num_pixels - 1)  # ✅ Uses randint correctly
+                if num not in indices:
+                    indices.append(num)
+            
+            for i in indices:
+                self.pixels[i] = colour  # ✅ Uses self.pixels correctly
 
             self.pixels.show()
-            time.sleep(sec_interval)  # Wait
+            time.sleep(sec_interval)
 
-            self.pixels.fill(self.BLACK)  # Turn off
+            for i in indices:
+                self.pixels[i] = self.BLACK  # ✅ Uses self.BLACK instead of cp.BLACK
+
             self.pixels.show()
-            time.sleep(sec_interval)  # Wait again
+            time.sleep(sec_interval)
 
     def snake(self, snake_size, colour, interval):
         """Creates a moving snake pattern"""
         if not (2 <= snake_size <= self.num_pixels // 2):
             return  # Invalid snake size, terminate function
-        
+
         for start in range(self.num_pixels - snake_size + 1):
             self.pixels.fill(self.BLACK)
             for i in range(snake_size):
