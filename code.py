@@ -16,7 +16,7 @@ sensor_display = SensorLightDisplay(0.5)  # ✅ Only one instance
 
 # Continuous loop to update lights based on tilting
 #while True:
-    #sensor_display.light((255, 0, 0))  # Adjust LEDs based on tilt (Red)
+    #sensor_display.light((255, 255, 0))  # Adjust LEDs based on tilt (Red)
     
     # Adjust brightness based on tilt feedback
     #acceleration_y = sensor_display.accelerometer.acceleration[1]
